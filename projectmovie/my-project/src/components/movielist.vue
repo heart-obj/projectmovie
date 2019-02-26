@@ -1,34 +1,36 @@
 <template>
     <div class="list-box">
         <div>
-            <el-row v-for='(val,i) in datalist' v-bind:key="i">
+            <el-row v-for='(val,i) in datalist' v-bind:key="i" class="movie-b">
                 <!-- <el-col class="list-t">
                     <span>{{val.title}}</span>
                     <span class="iconfont icon-ios-arrow-forward"></span>
                 </el-col> -->
-                <el-col class="movie-r">
+                <el-col class="movie-r" v-bind:movie_id=val.id>
                     <div class="movie-l">
                         <div class="movie-img">
-                            <img src="https://p0.meituan.net/128.180/movie/fc4dd6cd0c6f7db566a128cc05c475355664427.jpg" alt="">
+                            <img v-bind:src=val.img  alt="">
                         </div>
                         <div class="movie-t">
                             <div class="movie-introduce">
-                                <h3>决战食神</h3>
+                                <h3>{{val.nm}}</h3>
                                 <div class="movie-rate">
                                     <el-rate
-                                        v-bind:value=3.5
+                                        v-bind:value=val.sc/2
                                         disabled
                                         show-score
                                         text-color="#ff9900"
-                                        score-template="">
+                                        score-template:val.sc>
                                     </el-rate>
                                 </div>
-                                <div class="text-d">今天199家影院放映3380场</div>
-                                <div class="text-d">主演：罗莎·萨拉查,克里斯托弗·沃尔兹,基恩·约翰逊</div>
+                                <div class="text-d">{{val.showInfo}}</div>
+                                <div class="text-d">主演：{{val.star}}</div>
+                                <div class="text-d">上映日期：{{val.rt}}</div>
+                                <div class="ticket-box">
+                                    <button type="button" class="el-button el-button--primary ticket-btn"><span>确 定</span></button>
+                                </div>
                             </div>
-                            <div class="">
-
-                            </div>
+                           
                         </div>
                         
                     </div>
@@ -56,7 +58,12 @@ export default {
         })
         .then((response)=>{
             console.log(response.data.movieList)
-            _this.datalist=response.data;
+            var res=response.data.movieList;
+            for(var i=0;i<res.length;i++){
+                res[i].img="https://p0.meituan.net/128.180/movie/"+res[i].img.split("http://p0.meituan.net/w.h/movie/")[1];
+            }
+            console.log(res)
+            _this.datalist=res;
         })
         .catch((error)=>{
             console.log(error)
@@ -81,6 +88,9 @@ export default {
 }
 .list-t span:nth-child(2){
     float:right;
+}
+.movie-b{
+    margin-top: 8px;
 }
 .movie-r{
     width: 100%;
@@ -112,6 +122,7 @@ export default {
 .movie-introduce{
     max-width:100%;
     height: 100%;
+    position: relative;
 }
 .movie-introduce h3{
     font-size: 4.45vw;
@@ -122,11 +133,21 @@ export default {
 }
 .movie-introduce .text-d{
     width: 100%;
-    height: 7vw;
+    max-height: 8vw;
     overflow: hidden;
     text-align: left;
     font-size: 3.34vw;
-    line-height: 3.34vw;
-    margin-top: 10px;
+    line-height: 4vw;
+    margin-top: 5px;
+}
+.ticket-box{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.ticket-btn{
+    padding: 8px 12px;
+    float: right;
 }
 </style>
