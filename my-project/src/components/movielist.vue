@@ -16,23 +16,20 @@
                                 <h3>{{val.nm}}</h3>
                                 <div class="movie-rate">
                                     <el-rate
-                                        v-bind:value=val.sc/2
+                                        v-bind:value=val.sc2
                                         disabled
                                         show-score
-                                        text-color="#ff9900"
-                                        score-template:val.sc>
+                                        text-color="#ff9900">
                                     </el-rate>
                                 </div>
                                 <div class="text-d">{{val.showInfo}}</div>
                                 <div class="text-d">主演：{{val.star}}</div>
                                 <div class="text-d">上映日期：{{val.rt}}</div>
-                                <div class="ticket-box">
-                                    <button type="button" class="el-button el-button--primary ticket-btn"><span>购 票</span></button>
-                                </div>
                             </div>
-                           
                         </div>
-                        
+                        <div class="ticket-box">
+                            <button type="button" class="el-button el-button--primary ticket-btn"><span>购 票</span></button>
+                        </div>
                     </div>
                     <div></div>
                 </el-col>
@@ -61,6 +58,7 @@ export default {
             var res=response.data.movieList;
             for(var i=0;i<res.length;i++){
                 res[i].img="https://p0.meituan.net/128.180/movie/"+res[i].img.split("http://p0.meituan.net/w.h/movie/")[1];
+                res[i].sc2=res[i].sc/2;
             }
             console.log(res)
             _this.datalist=res;
@@ -71,30 +69,10 @@ export default {
          
     },
     mounted(){
-        this.$http({
-            methods:"get",
-            url:'/api3/iplookup/iplookup.php?format=js'
-        })
-        .then((response)=>{
-            console.log(response)
-        })
-        .catch((error)=>{
-
-        })
+        
     },
     methods:{
-        myLocation(){
-            this.$http({
-                methods:"get",
-                url:'/api3/iplookup/iplookup.php?format=js'
-            })
-            .then((response)=>{
-                console.log(response)
-            })
-            .catch((error)=>{
-
-            })
-        }
+       
     } 
 }
 </script>
@@ -141,7 +119,7 @@ export default {
     height: 100%;
 }
 .movie-t{
-    width: calc(100% - 22vw);
+    width: calc(100% - 40vw);
     height: 100%;
     float: left;
     padding-left: 10px;
@@ -154,6 +132,9 @@ export default {
 }
 .movie-introduce h3{
     font-size: 4.45vw;
+    height: 5vw;
+    line-height: 5vw;
+    overflow: hidden;
     text-align: left;
 }
 .movie-rate{
@@ -171,8 +152,10 @@ export default {
 .ticket-box{
     width: 100%;
     position: absolute;
-    bottom: 0;
+    bottom: 8px;
     left: 0;
+    box-sizing: border-box;
+    padding:0 10px;
 }
 .ticket-btn{
     padding: 8px 12px;
