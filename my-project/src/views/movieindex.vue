@@ -29,8 +29,8 @@
 			    </el-carousel>
 			</div>
 		</div>
-        <div class="movielist">
-            <movielist v-bind:dataType="getType" v-bind:show=show></movielist>
+        <div class="movielist" v-if="dataArr">
+            <movielist v-bind:dataType="getType" v-bind:show="show" v-bind:dataArr="dataArr"></movielist>
         </div>
         <comfooter></comfooter>
     </div>
@@ -40,6 +40,7 @@
 import movielist from "@/components/movielist";
 import comfooter from "@/components/comfooter";
 import { debug } from "util";
+import { constants } from 'fs';
 
 export default {
     name: "HelloWorld",
@@ -54,14 +55,27 @@ export default {
             cinema:false,
             orderdetail:false,
             user:false,
+            dataArr:"",
+           
+            movielistdata:"",
+            movieindexdata:""
         };
     },
     components: {
         movielist: movielist,
         comfooter: comfooter,
     },
+    created(){
+        
+       if(this.show){
+            this.movielist()
+        }else{
+            this.expectMovie()
+        }
+    },
     mounted() {
         // dom挂载完成后加载
+        
     },
     methods: {
         // 定义函数
@@ -70,12 +84,19 @@ export default {
                 this.primary = "btn-c";
                 this.newdefault = "";
                 this.getType = "正在";
-				this.show=true;
+                this.show=true;
+                this.dataArr=this.movieindexdata
             } else {
                 this.primary = "";
                 this.newdefault = "btn-c";
                 this.getType = "未来";
-				this.show=false;
+                this.show=false;
+                if(!this.movielistdata){
+                    this.expectMovie()
+                }else{
+                    this.dataArr=this.movielistdata
+                }
+                
             }
         },
         tabClick(el){
@@ -106,6 +127,80 @@ export default {
                     this.user=true;
                     break;
             }
+        },
+        movielist(){
+            let _this = this;
+            this.$http({
+                    method: 'get',
+                    url: '/api2/ajax/movieOnInfoList?token=',
+                })
+                .then((response) => {
+                    var res = response.data.movieList;
+                    for (var i = 0; i < res.length; i++) {
+                        var img= res[i].img.split("http://p0.meituan.net/w.h/movie/")[1];
+                        if(!img){
+                            img=res[i].img.split("http://p1.meituan.net/w.h/movie/")[1]
+                        }
+                        res[i].img = "https://p0.meituan.net/128.180/movie/" +img;
+                        res[i].sc2 = res[i].sc / 2;
+                    }
+                    this.dataArr=res;
+                    _this.movieindexdata = res;
+                })
+                .catch((error) => {
+                    console.log(error)
+                });
+        },
+        expectMovie(){
+            let _this=this;
+            _this.$http({
+                method:'get',
+                url:'/api2/ajax/comingList?ci=59&token=&limit=10'
+            })
+            .then((response)=>{
+                var res = response.data.coming;
+                for (var i = 0; i < res.length; i++) {
+                    var img= res[i].img.split("http://p0.meituan.net/w.h/movie/")[1];
+                    if(!img){
+                        img=res[i].img.split("http://p1.meituan.net/w.h/movie/")[1]
+                    }
+                    res[i].img = "https://p0.meituan.net/128.180/movie/" +img;
+                    res[i].sc2 = res[i].sc / 2;
+                };
+                this.dataArr=res;
+                _this.movielistdata = res;
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+        },
+        mostrequest(){
+            let _this=this;
+            _this.$http({
+                methods:"get",
+                url:"/api2/ajax/mostExpected?ci=59&limit=10&offset=0&token="
+            })
+            .then((response)=>{
+                var res = response.data.coming;
+                const dataArr=[];
+                for (var i = 0; i < res.length; i++) {
+                    var img= res[i].img.split("http://p0.meituan.net/w.h/movie/")[1];
+                    if(!img){
+                        img=res[i].img.split("http://p1.meituan.net/w.h/movie/")[1]
+                    }
+                    res[i].img = "https://p0.meituan.net/128.180/movie/" +img;
+                    res[i].sc2 = res[i].sc / 2;
+                    dataArr.push({
+                        title: '',
+                        style:{
+                            background:res[i].img
+                        } 
+                    })
+                };
+            })
+            .catch((error)=>{
+
+            })
         }
     }
 };

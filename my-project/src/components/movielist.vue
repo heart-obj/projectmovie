@@ -3,15 +3,12 @@
 		<div>
 			<el-row v-if="!show">
 				<el-row>近期最受期待</el-row>
-				<el-row>
-					<!-- <slider :pages="pages" :sliderinit="sliderinit"> -->
+				<el-row class="pages-b">
+					
 				</el-row>
 			</el-row>
 			<el-row v-for='(val,i) in datalist' v-bind:key="i" class="movie-b">
-				<el-col class="list-t" v-if="!show">
-					<span>{{val.title}}</span>
-					<span class="iconfont icon-ios-arrow-forward"></span>
-				</el-col>
+				
 				<el-col class="movie-r" v-bind:movie_id=val.id>
 					<div class="movie-l">
 						<div class="movie-img">
@@ -30,7 +27,8 @@
 							</div>
 						</div>
 						<div class="ticket-box">
-							<button type="button" class="el-button el-button--primary ticket-btn"><span>购 票</span></button>
+							<button type="button" class="el-button el-button--primary ticket-btn" v-if="show"><span>购 票</span></button>
+							<button type="button" class="el-button el-button--primary ticket-btn" v-if="!show"><span>预 购</span></button>
 						</div>
 					</div>
 					<div></div>
@@ -47,55 +45,40 @@
 			return {
 				modelname: "电影列表",
 				datalist: "",
+				
 			}
 		},
-		props: ["dataType", "show"],
-		methods: {
-			movielist(){
-				let _this = this;
-				this.$http({
-						method: 'get',
-						url: '/api2/ajax/movieOnInfoList?token=',
-					})
-					.then((response) => {
-						console.log(response.data.movieList)
-						var res = response.data.movieList;
-						for (var i = 0; i < res.length; i++) {
-							res[i].img = "https://p0.meituan.net/128.180/movie/" + res[i].img.split("http://p0.meituan.net/w.h/movie/")[1];
-							res[i].sc2 = res[i].sc / 2;
-						}
-						console.log(res)
-						_this.datalist = res;
-					})
-					.catch((error) => {
-						console.log(error)
-					});
-			},
-			expectMovie(){
-				let _this=this;
-				_this.$http({
-					method:'get',
-					url:'/api2/ajax/mostExpected?ci=59&limit=10&offset=0&token='
-				})
-				.then((response)=>{
-					console.log(response)
-				})
-				.catch((error)=>{
-					console.log(error)
-				})
-			}
+		props: ["dataType", "show","dataArr"],
+		components:{
+			slider
 		},
+		
 		created() {
-			this.movielist();
-			if(!this.show){
-				console.log(11)
-				this.expectMovie()
-			}
+			this.datalist=this.dataArr;
 
 		},
 		mounted() {
 			console.log(this.show)
+			 
 		},
+		updated(){
+
+		},
+		methods: {
+			
+		},
+		watch:{
+			dataArr:{
+				immediate:true,
+				handler(val){
+					console.log(val)
+					this.datalist=val
+				}
+			},
+			
+		}
+		
+		
 		
 	}
 </script>
@@ -107,7 +90,10 @@
 		height: 100%;
 		overflow: auto;
 	}
-
+	.pages-b{
+		width: 100%;
+		height: 60px;
+	}
 	.list-t {
 		height: 16.67vw;
 	}

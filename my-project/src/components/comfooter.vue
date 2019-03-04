@@ -34,7 +34,7 @@
 </template>
 <script>
 export default {
-    name:"footer",
+    name:"tab切换",
     data() {
         return {
             home:true,
