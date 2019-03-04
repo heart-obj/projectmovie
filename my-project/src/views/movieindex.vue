@@ -1,34 +1,36 @@
 <template>
     <div class="main-box">
-        <div>
-            <el-row class="box-h">
-                <el-col :span="4">
-                    <span class="line-h iconfont icon-ios-arrow-down">成都</span>
-                </el-col>
-                <el-col :span="16">
-                    <span class="query-box">找影视剧、影院、影人</span>
-                </el-col>
-                <el-col :span="4">
-                    <span class="list line-h iconfont icon-ios-menu"></span>
-                </el-col>
-            </el-row>
-            <div>
-                <el-row class="tab-b">
-                    <el-button v-bind:class="primary" v-on:click="tabfunc(1)">正在热映</el-button>
-                    <el-button v-bind:class="newdefault" v-on:click="tabfunc(2)">即将上映</el-button>
-                </el-row>
-            </div>
-        </div>
-
-        <div class="block">
-            <el-carousel height="150px">
-                <el-carousel-item trigger="hover" v-for="item in 4" :key="item">
-                    <img src="./img/video.png" alt width="100%" height="100%">
-                </el-carousel-item>
-            </el-carousel>
-        </div>
+        <div class="main-h">
+			<div>
+			    <el-row class="box-h">
+			        <el-col :span="4">
+			            <span class="line-h iconfont icon-ios-arrow-down">成都</span>
+			        </el-col>
+			        <el-col :span="16">
+			            <span class="query-box">找影视剧、影院、影人</span>
+			        </el-col>
+			        <el-col :span="4">
+			            <span class="list line-h iconfont icon-ios-menu"></span>
+			        </el-col>
+			    </el-row>
+			    <div>
+			        <el-row class="tab-b">
+			            <el-button v-bind:class="primary" v-on:click="tabfunc(1)">正在热映</el-button>
+			            <el-button v-bind:class="newdefault" v-on:click="tabfunc(2)">即将上映</el-button>
+			        </el-row>
+			    </div>
+			</div>
+			
+			<div class="block" v-if="show">
+			    <el-carousel height="150px">
+			        <el-carousel-item trigger="hover" v-for="item in 4" :key="item">
+			            <img src="./img/video.png" alt width="100%" height="100%">
+			        </el-carousel-item>
+			    </el-carousel>
+			</div>
+		</div>
         <div class="movielist">
-            <movielist v-bind:dataType="getType"></movielist>
+            <movielist v-bind:dataType="getType" v-bind:show=show></movielist>
         </div>
         <comfooter></comfooter>
     </div>
@@ -47,6 +49,7 @@ export default {
             primary: "btn-c",
             newdefault: "",
             getType: "正在",
+			show:true,
             home:true,
             cinema:false,
             orderdetail:false,
@@ -67,10 +70,12 @@ export default {
                 this.primary = "btn-c";
                 this.newdefault = "";
                 this.getType = "正在";
+				this.show=true;
             } else {
                 this.primary = "";
                 this.newdefault = "btn-c";
                 this.getType = "未来";
+				this.show=false;
             }
         },
         tabClick(el){
@@ -113,6 +118,12 @@ export default {
     box-sizing: border-box;
     padding-bottom: 76px;
     overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+.main-h{
+	width: 100%;
+	clear: both;
 }
 .box-h {
   height: 16.67vw;
@@ -180,8 +191,6 @@ export default {
 .movielist{
     box-sizing: border-box;
     width: 100%;
-    height: 106vw;
-    padding-bottom: 76px;
     overflow: hidden;
 }
 
