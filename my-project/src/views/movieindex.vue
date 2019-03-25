@@ -177,7 +177,7 @@ export default {
         mostrequest(){
             let _this=this;
             _this.$http({
-                methods:"get",
+                method:"get",
                 url:"/api2/ajax/mostExpected?ci=59&limit=10&offset=0&token="
             })
             .then((response)=>{
